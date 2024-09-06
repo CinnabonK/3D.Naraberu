@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Tic-Tac-Toe with Win Condition</title>
+    <title>3D Tic-Tac-Toe with Animation</title>
     <style>
         body {
             margin: 0;
@@ -17,8 +17,10 @@
         }
 
         .scene {
-            width: 320px;
-            height: 320px;
+            width: 80vw;
+            height: 80vw;
+            max-width: 320px;
+            max-height: 320px;
             perspective: 1000px;
         }
 
@@ -34,11 +36,16 @@
 
         .cube {
             position: absolute;
-            width: 88px;
-            height: 88px;
+            width: 27%; /* サイズをvw単位に変更 */
+            height: 27%; /* サイズをvw単位に変更 */
             border: none;
             box-sizing: border-box;
             transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .cube.clicked {
+            transform: rotateY(360deg);
         }
 
         .cube-face {
@@ -46,55 +53,79 @@
             width: 100%;
             height: 100%;
             background-color: white;
-            border: 2px solid black; /* 枠線を追加 */
+            border: 2px solid black;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 40px;
+            font-size: 8vw; /* フォントサイズを可変に */
             color: white;
             font-family: Arial, sans-serif;
             user-select: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        .cube-face.front  { transform: rotateY(  0deg) translateZ(44px); }
-        .cube-face.back   { transform: rotateY(180deg) translateZ(44px); }
-        .cube-face.left   { transform: rotateY(-90deg) translateZ(44px); }
-        .cube-face.right  { transform: rotateY( 90deg) translateZ(44px); }
-        .cube-face.top    { transform: rotateX( 90deg) translateZ(44px); }
-        .cube-face.bottom { transform: rotateX(-90deg) translateZ(44px); }
+        .cube-face.show-symbol {
+            opacity: 1;
+        }
 
-        .cube:nth-child(1)  { transform: translate3d(-104px, -104px, -104px); }
-        .cube:nth-child(2)  { transform: translate3d(0px, -104px, -104px); }
-        .cube:nth-child(3)  { transform: translate3d(104px, -104px, -104px); }
-        .cube:nth-child(4)  { transform: translate3d(-104px, 0px, -104px); }
-        .cube:nth-child(5)  { transform: translate3d(0px, 0px, -104px); }
-        .cube:nth-child(6)  { transform: translate3d(104px, 0px, -104px); }
-        .cube:nth-child(7)  { transform: translate3d(-104px, 104px, -104px); }
-        .cube:nth-child(8)  { transform: translate3d(0px, 104px, -104px); }
-        .cube:nth-child(9)  { transform: translate3d(104px, 104px, -104px); }
+        /* キューブの各面の位置 */
+        .cube-face.front  { transform: rotateY(  0deg) translateZ(50%); }
+        .cube-face.back   { transform: rotateY(180deg) translateZ(50%); }
+        .cube-face.left   { transform: rotateY(-90deg) translateZ(50%); }
+        .cube-face.right  { transform: rotateY( 90deg) translateZ(50%); }
+        .cube-face.top    { transform: rotateX( 90deg) translateZ(50%); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(50%); }
 
-        .cube:nth-child(10) { transform: translate3d(-104px, -104px, 0px); }
-        .cube:nth-child(11) { transform: translate3d(0px, -104px, 0px); }
-        .cube:nth-child(12) { transform: translate3d(104px, -104px, 0px); }
-        .cube:nth-child(13) { transform: translate3d(-104px, 0px, 0px); }
-        .cube:nth-child(14) { transform: translate3d(0px, 0px, 0px); }
-        .cube:nth-child(15) { transform: translate3d(104px, 0px, 0px); }
-        .cube:nth-child(16) { transform: translate3d(-104px, 104px, 0px); }
-        .cube:nth-child(17) { transform: translate3d(0px, 104px, 0px); }
-        .cube:nth-child(18) { transform: translate3d(104px, 104px, 0px); }
+        /* PC用のスタイル */
+        @media (min-width: 768px) {
+            .scene {
+                width: 320px;
+                height: 320px;
+            }
 
-        .cube:nth-child(19) { transform: translate3d(-104px, -104px, 104px); }
-        .cube:nth-child(20) { transform: translate3d(0px, -104px, 104px); }
-        .cube:nth-child(21) { transform: translate3d(104px, -104px, 104px); }
-        .cube:nth-child(22) { transform: translate3d(-104px, 0px, 104px); }
-        .cube:nth-child(23) { transform: translate3d(0px, 0px, 104px); }
-        .cube:nth-child(24) { transform: translate3d(104px, 0px, 104px); }
-        .cube:nth-child(25) { transform: translate3d(-104px, 104px, 104px); }
-        .cube:nth-child(26) { transform: translate3d(0px, 104px, 104px); }
-        .cube:nth-child(27) { transform: translate3d(104px, 104px, 104px); }
+            .cube {
+                width: 88px;
+                height: 88px;
+            }
 
-        .cube:nth-child(14) .cube-face { /* 真ん中のブロック (index 13) を黒にする */
-            background-color: black !important; /* !important を追加して上書き */
+            .cube-face {
+                font-size: 40px;
+            }
+        }
+
+        .cube:nth-child(1)  { transform: translate3d(-104%, -104%, -104%); }
+        .cube:nth-child(2)  { transform: translate3d(0%, -104%, -104%); }
+        .cube:nth-child(3)  { transform: translate3d(104%, -104%, -104%); }
+        .cube:nth-child(4)  { transform: translate3d(-104%, 0%, -104%); }
+        .cube:nth-child(5)  { transform: translate3d(0%, 0%, -104%); }
+        .cube:nth-child(6)  { transform: translate3d(104%, 0%, -104%); }
+        .cube:nth-child(7)  { transform: translate3d(-104%, 104%, -104%); }
+        .cube:nth-child(8)  { transform: translate3d(0%, 104%, -104%); }
+        .cube:nth-child(9)  { transform: translate3d(104%, 104%, -104%); }
+
+        .cube:nth-child(10) { transform: translate3d(-104%, -104%, 0%); }
+        .cube:nth-child(11) { transform: translate3d(0%, -104%, 0%); }
+        .cube:nth-child(12) { transform: translate3d(104%, -104%, 0%); }
+        .cube:nth-child(13) { transform: translate3d(-104%, 0%, 0%); }
+        .cube:nth-child(14) { transform: translate3d(0%, 0%, 0%); }
+        .cube:nth-child(15) { transform: translate3d(104%, 0%, 0%); }
+        .cube:nth-child(16) { transform: translate3d(-104%, 104%, 0%); }
+        .cube:nth-child(17) { transform: translate3d(0%, 104%, 0%); }
+        .cube:nth-child(18) { transform: translate3d(104%, 104%, 0%); }
+
+        .cube:nth-child(19) { transform: translate3d(-104%, -104%, 104%); }
+        .cube:nth-child(20) { transform: translate3d(0%, -104%, 104%); }
+        .cube:nth-child(21) { transform: translate3d(104%, -104%, 104%); }
+        .cube:nth-child(22) { transform: translate3d(-104%, 0%, 104%); }
+        .cube:nth-child(23) { transform: translate3d(0%, 0%, 104%); }
+        .cube:nth-child(24) { transform: translate3d(104%, 0%, 104%); }
+        .cube:nth-child(25) { transform: translate3d(-104%, 104%, 104%); }
+        .cube:nth-child(26) { transform: translate3d(0%, 104%, 104%); }
+        .cube:nth-child(27) { transform: translate3d(104%, 104%, 104%); }
+
+        .cube:nth-child(14) .cube-face {
+            background-color: black !important;
         }
 
         button {
@@ -142,7 +173,7 @@
                 // 真ん中のブロック(index 13)はクリックできないようにする
                 if (cube.classList.contains('clicked') || index === 13) return;
 
-                cube.classList.add('clicked');
+                cube.classList.add('clicked'); // キューブの回転アニメーション
                 const symbol = isCircleTurn ? '○' : '×';
                 gameState[index] = symbol;
 
@@ -150,6 +181,7 @@
                 faces.forEach(face => {
                     face.textContent = symbol;
                     face.style.backgroundColor = symbol === '○' ? 'red' : 'blue';
+                    face.classList.add('show-symbol'); // シンボルのフェードイン
                 });
 
                 if (checkWin(symbol)) {
@@ -173,38 +205,38 @@
                 faces.forEach(face => {
                     face.textContent = ''; // テキストのクリア
                     face.style.backgroundColor = 'white'; // 背景色をリセット
+                    face.classList.remove('show-symbol'); // フェードインのリセット
                 });
             });
         }
 
         // 勝利条件のチェック
-      function checkWin(symbol) {
-    const winningCombinations = [
-        // Z軸
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [9, 10, 11], [12, 14, 14], [15, 16, 17], // 真ん中(13)を除外
-        [18, 19, 20], [21, 22, 23], [24, 25, 26],
-        // Y軸
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [9, 12, 15], [10, 14, 16], [11, 17, 17], // 真ん中(13)を除外
-        [18, 21, 24], [19, 22, 25], [20, 23, 26],
-        // X軸
-        [0, 9, 18], [1, 10, 19], [2, 11, 20],
-        [3, 12, 21], [4, 14, 22], [5, 14, 23],  // 真ん中(13)を除外
-        [6, 15, 24], [7, 16, 25], [8, 17, 26],
-        // 対角線
-        [0, 14, 26], [2, 14, 24], [6, 14, 20], [8, 14, 18], // 真ん中(13)を除外
-        // 追加: 3D対角線 (真ん中(13)を除外)
-        [0, 10, 20], [2, 10, 18], [6, 16, 26], [8, 16, 24],  // Z軸の対角線
-        [0, 12, 24], [2, 14, 26], [6, 12, 18], [8, 14, 20],  // Y軸の対角線
-        [0, 4, 8], [18, 22, 26]                              // 3D空間での対角線
-    ];
+        function checkWin(symbol) {
+            const winningCombinations = [
+                // Z軸
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [9, 10, 11], [12, 14, 14], [15, 16, 17], // 真ん中(13)を除外
+                [18, 19, 20], [21, 22, 23], [24, 25, 26],
+                // Y軸
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [9, 12, 15], [10, 14, 16], [11, 17, 17], // 真ん中(13)を除外
+                [18, 21, 24], [19, 22, 25], [20, 23, 26],
+                // X軸
+                [0, 9, 18], [1, 10, 19], [2, 11, 20],
+                [3, 12, 21], [4, 14, 22], [5, 14, 23],  // 真ん中(13)を除外
+                [6, 15, 24], [7, 16, 25], [8, 17, 26],
+                // 対角線
+                [0, 14, 26], [2, 14, 24], [6, 14, 20], [8, 14, 18], // 真ん中(13)を除外
+                // 追加: 3D対角線 (真ん中(13)を除外)
+                [0, 10, 20], [2, 10, 18], [6, 16, 26], [8, 16, 24],  // Z軸の対角線
+                [0, 12, 24], [2, 14, 26], [6, 12, 18], [8, 14, 20],  // Y軸の対角線
+                [0, 4, 8], [18, 22, 26]                              // 3D空間での対角線
+            ];
 
-    return winningCombinations.some(combination =>
-        combination.every(index => gameState[index] === symbol)
-    );
-}
-
+            return winningCombinations.some(combination =>
+                combination.every(index => gameState[index] === symbol)
+            );
+        }
 
         let isDragging = false;
         let startX, startY;
