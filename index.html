@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +28,7 @@
             position: relative;
             transform-style: preserve-3d;
             transform: rotateX(-30deg) rotateY(-45deg);
-            transform-origin: 100px 50px 25px; /* 黒色の立方体を中心に回転 */
+            transform-origin: 100px 50px 25px;
             transition: transform 0.1s ease;
             user-select: none;
         }
@@ -98,6 +99,24 @@
             background-color: black !important;
         }
 
+        /* クリック時のアニメーション */
+        @keyframes clickAnimation {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2) rotateY(180deg);
+            }
+            100% {
+                transform: scale(1) rotateY(360deg);
+            }
+        }
+
+        .clicked-animate .cube-face {
+            animation: clickAnimation 0.6s ease;
+            transform-origin: center;
+        }
+
         button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -143,6 +162,7 @@
                 if (cube.classList.contains('clicked') || index === 13) return;
 
                 cube.classList.add('clicked');
+                cube.classList.add('clicked-animate'); // アニメーションを適用
                 const symbol = isCircleTurn ? '○' : '×';
                 gameState[index] = symbol;
 
@@ -166,7 +186,7 @@
             gameState = Array(27).fill(null);
             isCircleTurn = true;
             cubes.forEach(cube => {
-                cube.classList.remove('clicked');
+                cube.classList.remove('clicked', 'clicked-animate');
                 const faces = cube.querySelectorAll('.cube-face');
                 faces.forEach(face => {
                     face.textContent = '';
